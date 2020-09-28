@@ -4,72 +4,66 @@
     <meta charset="UTF-8" />
     <title>OpenLayers WMTS Basemaps Demo</title>
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css"
-      type="text/css"
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css"
+        type="text/css"
     />
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-    </style>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
   </head>
 
   <body>
-    <div id="map" style="width: 500px; height: 500px;"></div>
+    <div id="map" style="width: 800px; height: 600px;"></div>
     <script>
-      var projstr = "EPSG:3857";
-      var start_pos = [19467552, -5074414];
-      var start_zoom = 6;
-      var url = "https://tiles.dev.basemaps.linz.govt.nz/v1/tiles/aerial/3857/WMTSCapabilities.xml?api=mykey";
-      var attributions =
-        '<a href="https://www.linz.govt.nz/data/linz-data/linz-basemaps/data-attribution">LINZ CC BY 4.0 © Imagery Basemap contributors</a>';
+     const ApiKey = REPLACE_THIS_WITH_API_KEY;
+     var attributions =
+         '<a href="https://www.linz.govt.nz/data/linz-data/linz-basemaps/data-attribution">LINZ CC BY 4.0 © Imagery Basemap contributors</a>';
+     const projstr = "EPSG:3857";
+     const startPos = [19467552, -5074414];
+     const startZoom = 6;
+     const wmtsUrl = "https://basemaps.linz.govt.nz/v1/tiles/aerial/EPSG:3857/WMTSCapabilities.xml?api="+ApiKey;
 
-      //LINZ XYZ Services Map
-      var projection = ol.proj.get(projstr);
-      var projectionExtent = projection.getExtent();
-      var size = ol.extent.getWidth(projectionExtent) / 256;
-      var resolutions = new Array(14);
-      var matrixIds = new Array(14);
-      for (var z = 0; z < 14; ++z) {
-        resolutions[z] = size / Math.pow(2, z);
-        matrixIds[z] = z;
-      }
+     //LINZ XYZ Services Map
+     const projection = ol.proj.get(projstr);
+     const projectionExtent = projection.getExtent();
+     const size = ol.extent.getWidth(projectionExtent) / 256;
+     const resolutions = new Array(14);
+     const matrixIds = new Array(14);
+     for (let z = 0; z < 14; ++z) {
+         resolutions[z] = size / Math.pow(2, z);
+         matrixIds[z] = z;
+     }
 
-      var parser = new ol.format.WMTSCapabilities();
-      var grid = new ol.tilegrid.WMTS({
-            origin: ol.extent.getTopLeft(projectionExtent),
-            resolutions: resolutions,
-            matrixIds: matrixIds
-        });
+     const parser = new ol.format.WMTSCapabilities();
+     const grid = new ol.tilegrid.WMTS({
+         origin: ol.extent.getTopLeft(projectionExtent),
+         resolutions: resolutions,
+         matrixIds: matrixIds
+     });
 
-      fetch(url).then(async resp => {
-        var text = await resp.text()
-        var result = parser.read(text);
-        var options = ol.source.WMTS.optionsFromCapabilities(result, {
-          layer: "aerial-3857",
-          projection: projstr,
-          tileGrid: grid,
-          style:"default"
-        });
+     const view  = new ol.View({
+         center: startPos,
+         zoom: startZoom
+     });
 
-        var tiles = new ol.layer.Tile({
-            source: new ol.source.WMTS(options),
-            projection: projection,
-        });
+     (async () => {
+         const resp = await fetch(wmtsUrl);
+         const text = await resp.text()
+         const result = parser.read(text);
+         const options = ol.source.WMTS.optionsFromCapabilities(result, {
+             layer: "aerial",
+             projection: projstr,
+             tileGrid: grid,
+             style:"default"
+         });
 
-        new ol.Map({
-          layers: [tiles],
-          target: "map",
-          view: new ol.View({
-            center: start_pos,
-            zoom: start_zoom
-          })
-        });
-      });
+         const source = new ol.source.WMTS(options);
+         new ol.Map({
+             layers: [new ol.layer.Tile({ source, projection })],
+             target: "map",
+             view,
+         });
+         source.setAttributions(attributions);
+     })();
     </script>
   </body>
 </html>

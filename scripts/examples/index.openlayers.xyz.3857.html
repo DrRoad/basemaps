@@ -4,16 +4,16 @@
     <meta charset="UTF-8" />
     <title>OpenLayers WGS84 Basemaps Demo</title>
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css"
-      type="text/css"
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css"
+        type="text/css"
     />
     <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
+     html,
+     body {
+         height: 100%;
+         margin: 0;
+     }
     </style>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
   </head>
@@ -21,27 +21,28 @@
   <body>
     <div id="map" style="width: 500px; height: 500px;"></div>
     <script>
-      var start_pos = [19467552, -5074414];
-      var start_zoom = 6;
-      var url = "https://basemaps.linz.govt.nz/v1/tiles/aerial/3857/{z}/{x}/{y}.webp?api=mykey";
-      var attributions = '<a href="https://www.linz.govt.nz/data/linz-data/linz-basemaps/data-attribution">LINZ CC BY 4.0 © Imagery Basemap contributors</a>';
+     const ApiKey = REPLACE_THIS_WITH_API_KEY;
+     const startPos = [19467552, -5074414];
+     const startZoom = 6;
+     const url = "https://basemaps.linz.govt.nz/v1/tiles/aerial/EPSG:3857/{z}/{x}/{y}.webp?api="+ApiKey;
+     const attributions = '<a href="https://www.linz.govt.nz/data/linz-data/linz-basemaps/data-attribution">LINZ CC BY 4.0 © Imagery Basemap contributors</a>';
 
-      //LINZ XYZ Services Map
-      var map = new ol.Map({
-        target: "map",
-        layers: [
-          new ol.layer.Tile({
-            source: new ol.source.XYZ({
-              url: url,
-              attributions: [attributions]
-            })
-          })
-        ],
-        view: new ol.View({
-          center: start_pos,
-          zoom: start_zoom
-        })
-      });
+     //LINZ XYZ Services Map
+     new ol.Map({
+         target: "map",
+         layers: [
+             new ol.layer.Tile({
+                 source: new ol.source.XYZ({
+                     url,
+                     attributions: [attributions]
+                 })
+             })
+         ],
+         view: new ol.View({
+             center: startPos,
+             zoom: startZoom
+         })
+     });
     </script>
   </body>
 </html>

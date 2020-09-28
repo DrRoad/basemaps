@@ -20,19 +20,19 @@
   <body>
     <div id="map" style="width: 600px; height: 400px;"></div>
     <script>
-      var start_pos = [-40.5, 173];
-      var start_zoom = 6;
+      const ApiKey = REPLACE_THIS_WITH_API_KEY;
+      const startPos = [-40.5, 173];
+      const startZoom = 6;
 
-      var url = "https://basemaps.linz.govt.nz/v1/tiles/aerial/3857/{z}/{x}/{y}.webp?api=mykey";
-      var attributions = '<a href="https://www.linz.govt.nz/data/linz-data/linz-basemaps/data-attribution">LINZ CC BY 4.0 © Imagery Basemap contributors</a>';
+      const url = "https://basemaps.linz.govt.nz/v1/tiles/aerial/EPSG:3857/{z}/{x}/{y}.webp?api="+ApiKey;
 
-      var tiles = L.tileLayer(url, {
-        attribution: attributions
+      const tiles = L.tileLayer(url, {
+        attribution: '<a href="https://www.linz.govt.nz/data/linz-data/linz-basemaps/data-attribution">LINZ CC BY 4.0 © Imagery Basemap contributors</a>'
       });
 
-      var map = L.map("map")
+      L.map("map")
         .addLayer(tiles)
-        .setView(start_pos, start_zoom);
+        .setView(startPos, startZoom);
 
     </script>
   </body>
